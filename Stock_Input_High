@@ -1,0 +1,58 @@
+#Python code for my Stock Input Window for Tkinter
+
+from tkinter import  *
+import requests
+import json
+import datetime
+
+print('Please print the month you would like to get stock data from:'
+      'Please follow the month keys!!'
+      'Jan = 1 , Feb = 2, March = 3, April = 4, May = 5, June = 6, July = 7, Aug = 8, Sept = 9, Oct = 10, Nov = 11, '
+      'Dec = 12'
+      )
+month = int(input())
+
+print('Please print the day you would like to look at. Attn: for single digits do not use a zero good = 1 bad = 01')
+day = int(input())
+print('Please print the year you would like to look at')
+year = int(input())
+
+date = datetime.date(year,month,day)
+day_1 = date.strftime('%A %B %d, %Y')
+
+date_1 = date.strftime('%Y-%m-%d')
+
+
+print('Please input the symbol you would like to look at')
+
+symbol = str(input())
+symbol = symbol.upper()
+
+alpha_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey=4P71T6YHIUDWD6L7'
+try:
+    r = requests.get(alpha_url)
+    api = json.loads(r.content)
+except Exception as e:
+    api = 'Error...'
+
+# This is where I will use the get statements to use the code for the API
+price_high = api
+price_high=price_high.get('Time Series (Daily)', {}).get(date_1,{}).get('2. high',{})
+price_high_int = price_high[0:6]
+print(price_high_int)
+
+#Drop Down Menu or Calendar
+
+# Input Statement in display input statement on Tkinter
+
+
+#Tkinter stuff goes here
+root = Tk()
+root.title('BootlegResearch.com - My Web')
+root.geometry('800x800')
+
+label1 = Label(root, text = '$' + price_high_int, fg = 'green')
+label2 = Label(root, text = "On " + day_1 + " the high for " + symbol + " " + "$"+price_high_int, fg = 'blue')
+label1.pack()
+label2.pack()
+root.mainloop()
